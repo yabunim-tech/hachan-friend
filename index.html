@@ -235,10 +235,13 @@ label.field { display: block; font-size: 14px; font-weight: 700; color: var(--fg
 .decor-svg .thin { stroke-width: 1.5; }
 .d-window   { left: 30px; top: 40px; width: 100px; height: 100px; }
 .d-curtain  { left: 16px; top: 30px; width: 128px; height: 116px; }
-.d-frame    { right: 36px; top: 40px; width: 64px; height: 52px; }
+.d-frame    { right: 128px; top: 36px; width: 64px; height: 52px; }
+.d-lamp     { right: 44px; bottom: 182px; width: 40px; height: 60px; }   /* 책장 위 */
+.d-plant    { left: 20px; bottom: 40px; width: 56px; height: 84px; }
 .d-bookshelf, .d-books { right: 26px; bottom: 40px; width: 84px; height: 144px; }
 .d-vase     { left: 40px; bottom: 40px; width: 40px; height: 56px; }
 .room.has-window .d-vase { left: 60px; bottom: 162px; }   /* 창문이 있으면 창틀 위에 */
+.room.has-plant:not(.has-window) .d-vase { left: 84px; }   /* 바닥에선 화분 옆으로 비켜 선다 */
 .d-rug      { left: 50%; bottom: 24px; width: 240px; height: 30px; margin-left: -120px; }
 .food .decor-svg { grid-row: span 2; width: 40px; height: 40px; color: var(--fg); }
 
@@ -255,6 +258,7 @@ label.field { display: block; font-size: 14px; font-weight: 700; color: var(--fg
 .heart { width: 22px; height: 22px; color: var(--low); }
 .soap { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--action); opacity: .8; }
 .munch { font-size: 14px; font-weight: 700; color: var(--fg); }
+.cure { font-size: 24px; font-weight: 700; color: var(--low); }
 
 .gauges { margin-top: 16px; display: grid; gap: 10px; }
 .gauge { display: grid; grid-template-columns: 52px 1fr 34px; align-items: center; gap: 10px; font-size: 14px; }
@@ -265,14 +269,14 @@ label.field { display: block; font-size: 14px; font-weight: 700; color: var(--fg
 .gauge em { font-style: normal; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
 .gauge.low em { color: var(--low); font-weight: 700; }
 
-.actions { margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.actions { margin-top: 18px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .act {
   border: 1px solid var(--line); background: var(--canvas); border-radius: 4px; height: 76px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--fg);
 }
 .act:hover { background: var(--paper); }
 .act svg { width: 26px; height: 26px; }
-.act b { font-size: 14px; font-weight: 700; }
+.act b { font-size: 13px; font-weight: 700; white-space: nowrap; }
 .act small { font-size: 11px; color: var(--muted); line-height: 1; }
 .act:disabled { color: var(--muted); cursor: default; background: var(--canvas); }
 .act:disabled svg { opacity: .4; }
@@ -391,7 +395,7 @@ label.field { display: block; font-size: 14px; font-weight: 700; color: var(--fg
     <label class="field" for="nameInput">이름</label>
     <input class="text-input" id="nameInput" maxlength="8" placeholder="최대 8자" autocomplete="off">
     <button class="btn" id="adoptBtn" disabled>입양하기</button>
-    <p class="hint">시작 코인 30개를 드려요. 텃밭에서 거둔 작물을 팔아 코인을 벌어요. 게이지가 낮아져도 친구는 시무룩해질 뿐 떠나지 않아요.</p>
+    <p class="hint">시작 코인 30개를 드려요. 텃밭에서 거둔 작물을 팔아 코인을 벌어요. 게이지가 아주 낮아지면 아플 수 있지만 떠나지는 않아요. 치료하기로 금방 나아요.</p>
   </section>
 
   <!-- 키우기 -->
@@ -410,6 +414,7 @@ label.field { display: block; font-size: 14px; font-weight: 700; color: var(--fg
       <button class="act" id="actWash"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="19" r="6"/><circle cx="21" cy="12" r="4"/><circle cx="22" cy="23" r="3"/></svg><b>씻기기</b><small id="washSub">+2코인</small></button>
       <button class="act" id="actPet"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 26s-10-6-10-13a5.5 5.5 0 0 1 10-3 5.5 5.5 0 0 1 10 3c0 7-10 13-10 13Z"/></svg><b>쓰다듬기</b><small id="petSub">+1코인</small></button>
       <button class="act" id="actDance"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 24V8l14-3v16"/><circle cx="9" cy="24" r="3"/><circle cx="23" cy="21" r="3"/></svg><b>춤추기</b><small id="danceSub">기분 +</small></button>
+      <button class="act" id="actHeal"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="22" height="16" rx="3"/><path d="M12 10V7h8v3M16 14v8M12 18h8"/></svg><b>치료하기</b><small id="healSub">건강해요</small></button>
     </div>
     <div class="nav-rows">
       <button class="nav-row" id="openDecor"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V12a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v5"/><path d="M4 17a2 2 0 0 1 4 0v3h16v-3a2 2 0 0 1 4 0v6H4Z"/><path d="M7 23v3M25 23v3"/></svg><span><b>방 꾸미기</b><small id="decorSub"></small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -564,6 +569,19 @@ const DECOR = {
     '<circle class="dot" cx="9" cy="9" r="1"/><circle class="dot" cx="20" cy="5" r="1"/><circle class="dot" cx="32" cy="10" r="1"/>' +
     '<path class="fill" d="M14 54C6 47 7 36 15 30C16 27 15 25 14 23H26C25 25 24 27 25 30C33 36 34 47 26 54Z"/>' +
     '<path class="thin" d="M10 42C17 44 23 44 30 42"/>' },
+  lamp: { name: "스탠드", price: 14, req: "bookshelf", w: 40, h: 60, svg:
+    '<path d="M20 27V51"/><path class="thin" d="M28 26V34"/><circle class="dot" cx="28" cy="35.5" r="1.8"/>' +
+    '<path class="fill" d="M9 4C16 3 24 3 31 4L38 26C26 27 14 27 2 26Z"/>' +
+    '<path class="fill" d="M10 52C16 50 24 50 30 52L31 57C24 58 16 58 9 57Z"/>' +
+    '<path class="thin" d="M5 31L1 35M35 31L39 35M20 31V35"/>' },
+  plant: { name: "화분", price: 10, w: 56, h: 84, svg:
+    '<path d="M29 52C28 40 29 30 31 20"/>' +
+    '<path class="fill" d="M29 34C20 33 12 26 10 16C20 16 27 24 29 34Z"/><path class="fill" d="M30 28C36 22 44 20 50 22C47 30 39 33 30 32Z"/>' +
+    '<path class="fill" d="M28 45C22 47 15 45 9 39C15 35 23 37 28 45Z"/><path class="fill" d="M30 41C37 39 45 41 49 47C43 51 36 49 30 41Z"/>' +
+    '<path class="fill" d="M31 21C30 14 33 7 38 4C40 11 37 18 31 21Z"/>' +
+    '<path class="thin" d="M14 19C20 25 25 30 29 34M47 23C41 27 35 30 30 32"/>' +
+    '<path class="fill" d="M15 57C25 56 33 56 43 57L39 82C32 83 25 83 18 82Z"/>' +
+    '<path class="fill" d="M11 51C24 50 34 50 47 51L46 57C34 58 22 58 12 57Z"/>' },
   rug: { name: "러그", price: 12, w: 240, h: 30, svg:
     '<ellipse class="fill" cx="120" cy="15" rx="112" ry="12"/><ellipse class="thin" cx="120" cy="15" rx="96" ry="7.5" stroke-dasharray="4 5"/>' +
     '<path class="thin" d="M8 11L2 10M8 15L1 15M8 19L2 20M232 11L238 10M232 15L239 15M232 19L238 20"/>' },
@@ -578,6 +596,8 @@ const decorCount = () => Object.keys(DECOR).filter(decorShown).length;
 const BASE_DECAY = { full: 16, mood: 14, clean: 11 };
 const OFFLINE_CAP = 4 * 60 * 60 * 1000;
 const LOW = 30, HAPPY = 70;
+// 게이지 하나라도 SICK_AT 이하로 떨어지면 아프다: 시무룩 + 게이지가 SICK_DECAY배 빨리 준다. 치료하기(HEAL_PRICE코인)로 낫고 낮은 게이지는 HEAL_TO까지 오른다
+const SICK_AT = 15, SICK_DECAY = 1.25, HEAL_PRICE = 10, HEAL_TO = 50;
 
 const CHARS = {
   sprout: {
@@ -592,6 +612,8 @@ const CHARS = {
       bored:  ["심심해... 같이 놀자!", "누가 나랑 놀아줄 사람~", "하늘 구름 세기도 지겨워졌어"],
       idle:   ["오늘 날씨 좋다!", "새싹이 오늘도 힘내!", "뭐 재밌는 일 없을까?", "나 키 좀 큰 것 같지 않아?"],
       happy:  ["행복해! 너랑 있어서 좋아!", "오늘 완전 최고야!", "랄랄라~ 기분 짱이야!"],
+      sick:   ["으... 몸이 으슬으슬해...", "나 좀 아픈 것 같아...", "머리가 띵해... 그래도 힘낼게"],
+      heal:   ["다 나았다! 고마워!", "몸이 가벼워졌어! 헤헤", "약 먹으니까 금방 괜찮아졌어!"],
       levelup:["와아! 나 레벨업했어! 쑥쑥 크는 중!", "새싹 잎이 하나 더 날 것 같아!", "레벨업! 우리 축하 춤 추자!"],
       dance:  ["랄랄라! 신난다!", "빙글빙글~ 나 잘 추지?", "새싹 댄스 시작!"],
     },
@@ -608,6 +630,8 @@ const CHARS = {
       bored:  ["심심한데... 노는 것도 귀찮아...", "뭔가 하고 싶은데 뭘 할지 생각하기 싫어.", "...놀아줄 거면 누워서 놀자."],
       idle:   ["음... 누워 있기 딱 좋은 날이다.", "오늘 할 일은 내일로.", "납작하게 사는 게 최고야.", "...졸려."],
       happy:  ["음... 이 정도면 꽤 행복한 듯.", "아무것도 안 해도 기분 좋다.", "지금 딱 좋아. 움직이지 말자."],
+      sick:   ["으... 이번엔 진짜로 일어나기 힘들어...", "아픈 거야... 귀찮은 게 아니야...", "몸이 무거워... 더 납작해질 것 같아"],
+      heal:   ["음... 좀 살 것 같다.", "고마워... 이제 편하게 누워 있을게.", "다 나았어. ...그래도 누워 있을래."],
       levelup:["레벨업... 했대. 축하는 누워서 받을게.", "어... 나 좀 컸나? 귀찮게 크네.", "레벨업... 그럼 이제 좀 쉬어도 되지?"],
       dance:  ["춤...? 이번 한 번만이야.", "흐느적... 이게 내 최선이야.", "납작 댄스... 힘들다..."],
     },
@@ -624,6 +648,8 @@ const CHARS = {
       bored:  ["...심심해.", "멍때리는 것도... 질렸어.", "...같이 있어 줄래?"],
       idle:   ["...구름 봤어.", "멍.", "...저기 뭐 지나갔어.", "생각 안 하는 중."],
       happy:  ["...지금, 좋다.", "응. 행복해.", "...이대로 있고 싶어."],
+      sick:   ["...아파.", "...몸이 이상해.", "...열 나는 것 같아."],
+      heal:   ["...나았어. 고마워.", "...개운해.", "...이제 괜찮아."],
       levelup:["...레벨업. 좀 더 길어졌나.", "...축하해 줘서 고마워.", "레벨업. ...조용히 기뻐하는 중."],
       dance:  ["...흔들흔들.", "...이렇게?", "춤. ...생각보다 재밌어."],
     },
@@ -681,11 +707,16 @@ function decay(now) {
   const weak = CHARS[S.kind].weak;
   for (const k of Object.keys(BASE_DECAY)) {
     const cozy = k === "mood" ? 1 - DECOR_COZY * decorCount() : 1;   // 아늑한 방에선 기분이 천천히 준다
-    S[k] = clamp(S[k] - BASE_DECAY[k] * (k === weak ? 1.4 : 1) * cozy * hours);
+    S[k] = clamp(S[k] - BASE_DECAY[k] * (k === weak ? 1.4 : 1) * cozy * (S.sick ? SICK_DECAY : 1) * hours);
+  }
+  if (!S.sick && Object.keys(BASE_DECAY).some((k) => S[k] <= SICK_AT)) {
+    S.sick = true;
+    if (!$("home").hidden) setTimeout(() => say(pick(CHARS[S.kind].lines.sick), 4000), 0);
   }
 }
 
 function state() {
+  if (S.sick) return "sick";
   if (S.full < LOW) return "hungry";
   if (S.clean < LOW) return "dirty";
   if (S.mood < LOW) return "bored";
@@ -946,11 +977,14 @@ function update() {
     g.classList.toggle("low", v < LOW);
   }
   const st = state();
-  const sulky = st === "hungry" || st === "dirty" || st === "bored";
+  const sulky = ["hungry", "dirty", "bored", "sick"].includes(st);
   $("pet").classList.toggle("sulky", sulky);
   const tag = $("moodTag");
-  tag.textContent = sulky ? "시무룩" : st === "happy" ? "행복해요" : "평온해요";
+  tag.textContent = st === "sick" ? "아파요" : sulky ? "시무룩" : st === "happy" ? "행복해요" : "평온해요";
   tag.classList.toggle("low", sulky);
+  const needHeal = healNeeded();
+  $("actHeal").disabled = !needHeal;
+  $("healSub").textContent = needHeal ? `${HEAL_PRICE}코인` : "건강해요";
   const washLeft = Math.ceil(((S.washAt || 0) + 30000 - Date.now()) / 1000);
   $("washSub").textContent = washLeft > 0 ? `${washLeft}초 뒤` : handLeft() > 0 ? "+2코인" : "청결 +";
   $("petSub").textContent = handLeft() > 0 ? "+1코인" : "기분 +";
@@ -1008,6 +1042,7 @@ function burst(kind, n) {
       if (kind === "heart") spawn("heart float-up", HEART, x, y, (Math.random() - .5) * 40);
       if (kind === "soap") spawn("soap float-up", "", x, y + 40, (Math.random() - .5) * 30);
       if (kind === "note") spawn("note float-up", pick(["♪", "♫", "♬"]), x, y, (Math.random() - .5) * 60);
+      if (kind === "cure") spawn("cure float-up", "+", x, y, (Math.random() - .5) * 50);
       if (kind === "munch") spawn("munch float-up", pick(["냠", "냠냠", "오물"]), x + 40, y - 10, 20);
     }, i * 140);
   }
@@ -1106,6 +1141,25 @@ async function pet() {
   if (now >= petCooldownUntil) { handCoin(1); gainXp(3); petCooldownUntil = now + 4000; }
   say(pick(CHARS[S.kind].lines.pet), 2500);
   save(); update();
+}
+
+// 아프거나 낮은 게이지(LOW 미만)가 있을 때만 치료할 수 있다
+const healNeeded = () => S.sick || Object.keys(BASE_DECAY).some((k) => S[k] < LOW);
+async function heal() {
+  if (busy) return;
+  if (!healNeeded()) { toast("지금은 건강해요"); return; }
+  if (S.coins < HEAL_PRICE) { toast("코인이 부족해요. 텃밭에서 거둬 팔거나 쓰다듬기로 모아 보세요"); return; }
+  busy = true;
+  bumpCoin(-HEAL_PRICE);
+  burst("cure", 6);
+  await motion("petted", 800);
+  for (const k of Object.keys(BASE_DECAY)) S[k] = Math.max(S[k], HEAL_TO);
+  S.sick = false;
+  gainXp(5);
+  say(pick(CHARS[S.kind].lines.heal), 3500);
+  motion("hopping", 700);
+  burst("heart", 3);
+  save(); update(); busy = false;
 }
 
 async function dance(gain = true, force = false) {
@@ -1246,6 +1300,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet
 function renderRoom(popId) {
   const room = $("room");
   room.classList.toggle("has-window", decorShown("window"));
+  room.classList.toggle("has-plant", decorShown("plant"));
   room.innerHTML = Object.keys(DECOR).filter(decorShown)
     .map((id) => `<div class="d d-${id}${id === popId ? " pop" : ""}">${decorSvg(id)}</div>`).join("");
 }
@@ -1354,6 +1409,7 @@ $("actWash").onclick = wash;
 $("actPet").onclick = pet;
 $("pet").onclick = pet;
 $("actDance").onclick = () => dance(true);
+$("actHeal").onclick = heal;
 
 /* ---------- 시작 ---------- */
 if (S && CHARS[S.kind]) {
